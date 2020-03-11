@@ -46,15 +46,106 @@
 }
 
 .side__list {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-top: to-rem(16px);
 }
 
-.list__city__name {
-  color: $main-bg;
-  font-weight: $font-big;
-  margin-right: to-rem(8px);
+.dropdown__select {
+  display: flex;
+  width: 49%;
 }
 
+.side__card {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - #{to-rem(268px)});
+  overflow: auto;
+  padding-top: to-rem(8px);
+  padding-bottom: to-rem(24px);
+}
+
+.card__wrap {
+  position: relative;
+  width: 95%;
+  min-height: $card-height;
+  box-shadow: 0px 3px 6px #0000004B;
+  border-radius: 14px;
+  margin-top: to-rem(12px);
+}
+
+.card__icon {
+  position: absolute;
+  right: to-rem(9px);
+  top: to-rem(9px);
+  width: to-rem(48px);
+  height: to-rem(48px);
+  background: url("./images/phone.svg") no-repeat;
+  background-size: contain;
+}
+
+.card__txt {
+  display: flex;
+  flex-direction: column;
+  min-height: to-rem(100px);
+  margin-left: to-rem(20px);
+  margin-top: to-rem(15px);
+}
+
+.card__title {
+  font-size: $font-big;
+  color: $main-bg;
+}
+
+.card__phone {
+  margin-top: to-rem(30px);
+  font-size: $font-small;
+}
+
+.card__address {
+  margin-top: to-rem(8px);
+  font-size: $font-small;
+}
+
+.card__footer {
+  display: flex;
+  color: $light;
+}
+
+.mask__number {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  min-height: to-rem(50px);
+}
+
+.card__adult  {
+  border-radius: 0px 0px 0px 14px;
+}
+
+.card__child {
+  border-radius: 0px 0px 14px 0;
+}
+
+.more {
+  background: $main-bg;
+}
+
+.normal {
+  background: $normal-color;
+}
+
+.less {
+  background: $less-color;
+}
+
+.out {
+  background: $out-color;
+}
+
+// 右側地圖
 .right__side {
   display: flex;
   flex-direction: column;

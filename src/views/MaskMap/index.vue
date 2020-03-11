@@ -1,10 +1,10 @@
 <template lang="pug">
-  div.map__wrap
+  .map__wrap
     main.content
       aside.left__side
-        div.side__title
-          div.title__avatar
-          div.txt__wrap
+        .side__title
+          .title__avatar
+          .txt__wrap
             p.txt__tip 貼心小提醒
             template(v-if="week === 0")
               p 今天是<span class="txt__number">{{ weekFormatter(week) }}</span>
@@ -14,19 +14,49 @@
               span.txt__number(v-if="isEven") 「2、4、6、8、0」
               span.txt__number(v-else) 「1、3、5、7、9」
               span 的民眾才能購買口罩唷！
-        div.side__list
-          label.list__city__name 縣市
-          select.list__select(v-model="select.city")
-            option(value="") 請選擇任一縣市
-            option(v-model="node.CityName" v-for="node in cityName" :key="node.CityName") {{ node.CityName }}
-          label.list__city__name 地區
-          select.list__select(v-model="select.city")
-            option(value="") 請選擇任一地區
-            option(v-model="node.CityName" v-for="node in cityName" :key="node.CityName") {{ node.CityName }}
-      div.right__side
-        div.right__side__title
-          div.title__img
-          div.title__txt(v-for="node in txtList" :class="[`txt__${node.code}`]") {{ node.name }}
+        .side__list
+          .dropdown__select
+            multiselect(
+              v-model="citySelected"
+              label="CityName",
+              track-by="CityName",
+              placeholder="請選擇任一縣市",
+              :options="cityName",
+              :searchable="false",
+              :show-labels="false",
+              :allow-empty="false",
+              @input="updateMap()"
+            )
+          .dropdown__select
+            multiselect(
+              v-model="townSelected"
+              label="AreaName",
+              track-by="AreaName",
+              placeholder="請選擇任一鄉鎮地區",
+              :options="townName",
+              :searchable="false",
+              :show-labels="false",
+              :allow-empty="false",
+              @input="townUpdateMap()"
+            )
+        .side__card
+          .card__wrap(v-for="node in formData")
+            i.card__icon
+            .card__txt
+              .card__title {{ node.properties.name }}
+              .card__phone {{ node.properties.phone }}
+              .card__address {{ node.properties.address }}
+            .card__footer
+              span.mask__number.card__adult(
+                :class="{more: node.properties.mask_adult > 100, normal: node.properties.mask_adult > 50 && node.properties.mask_adult < 100, less: node.properties.mask_adult > 0 && node.properties.mask_adult < 50, out: node.properties.mask_adult === 0}"
+              ) 成人：{{ node.properties.mask_adult }}
+              span.mask__number.card__child(
+                :class="{more: node.properties.mask_child > 100, normal: node.properties.mask_child > 50 && node.properties.mask_child < 100, less: node.properties.mask_child > 0 && node.properties.mask_child < 50, out: node.properties.mask_child === 0}"
+              ) 兒童：{{ node.properties.mask_child }}
+      .right__side
+        .right__side__title
+          .title__img
+          .title__txt(v-for="node in txtList" :class="[`txt__${node.code}`]") {{ node.name }}
         l-map(:zoom="zoom" :center="center").right__map
           l-tile-layer(:url="url" :attribution="attribution")
           v-marker-cluster(:options="clusterOptions")
@@ -60,7 +90,6 @@ import { DAY_LIST } from '@/configs/site.js'
 import cityName from '@/assets/cityName'
 import { latLng, icon } from 'leaflet'
 import Vue2LeafletMarkerCluster from 'vue2-leaflet-markercluster'
-// let osmMap = {}
 
 export default {
   name: 'MaskMap',
@@ -74,10 +103,9 @@ export default {
       week: '',
       isEven: false,
       cityName,
-      select: {
-        city: '臺北市'
-      },
-      formData: [],
+      townName: [],
+      citySelected: '',
+      townSelected: '',
       txtList: [
         { name: '充足', code: 'more' },
         { name: '普通', code: 'normal' },
@@ -114,21 +142,19 @@ export default {
         iconSize: this.dynamicSize,
         iconAnchor: this.dynamicAnchor
       }),
+      formData: [],
       allPharmacieList: [],
       cityPharmacieList: []
     }
   },
 
-  computed: {
-  },
-
   mounted () {
-    // 取得遠端資料
+    // 取得遠端藥局 API 資料
     const url = 'https://raw.githubusercontent.com/kiang/pharmacies/master/json/points.json'
     this.$http.get(url).then((res) => {
-      console.log(res)
       this.updateTime = res.data.features[0].properties.updated
-      this.formData = res.data.features
+      this.allPharmacieList = res.data.features
+      console.log(this.allPharmacieList)
     }).catch((err) => {
       console.log(err)
     })
@@ -151,14 +177,23 @@ export default {
       if (target) return target.name
       else return target.code
     },
-    iconFormatter (val) {
-      console.log(val)
-    },
-    // 當用戶選擇縣市 || 地區時顯示對應區域資料
+    // 當用戶選擇縣市地區時顯示對應資料
     updateMap () {
+      this.townSelected = ''
       // 撈出選中的城市藥局列表
-      this.cityPharmacieList = this.formData.filter((node) => {
-        return node.properties.county === this.select.city
+      this.formData = this.allPharmacieList.filter((node) => {
+        return node.properties.county === this.citySelected.CityName
+      })
+      // 過濾出選中城市底下的鄉鎮列表
+      let subItem = this.cityName.filter((subNode) => {
+        return subNode.CityName === this.citySelected.CityName
+      })
+      this.townName = subItem[0].AreaList
+    },
+    townUpdateMap () {
+      // 撈出選中的地區藥局列表
+      this.formData = this.allPharmacieList.filter((node) => {
+        return node.properties.town === this.townSelected.AreaName
       })
     }
   }
