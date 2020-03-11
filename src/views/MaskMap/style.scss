@@ -1,0 +1,126 @@
+@import '@/assets/scss/share.scss';
+
+.map__wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  display: flex;
+  height: calc(100vh - $footer-height);
+}
+
+.left__side {
+  padding: to-rem(18px);
+  min-width: to-rem(400px);
+  box-shadow: 0px 3px 6px #00000029;
+}
+
+.side__title {
+  display: flex;
+}
+
+.title__avatar {
+  width: to-rem(135px);
+  height: to-rem(135px);
+  background: url("./images/avatar.svg") no-repeat;
+  background-position: center center;
+}
+
+.txt__wrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: to-rem(8px);
+  line-height: to-rem(28px);
+}
+
+.txt__tip {
+  color: $main-bg;
+  font-size: $font-large;
+  margin-bottom: to-rem(6px);
+}
+
+.txt__number {
+  color: $normal-color;
+}
+
+.side__list {
+  margin-top: to-rem(16px);
+}
+
+.list__city__name {
+  color: $main-bg;
+  font-weight: $font-big;
+  margin-right: to-rem(8px);
+}
+
+.right__side {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.right__side__title {
+  display: flex;
+  align-items: center;
+  height: $right-side-height;
+}
+
+.title__img {
+  width: to-rem(294px);
+  height: to-rem(83px);
+  margin-left: to-rem(16px);
+  background: url("./images/inventory.svg");
+  background-position: center center;
+}
+
+.title__txt {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: to-rem(100px);
+  height: to-rem(50px);
+  font-size: $font-big;
+  border-radius: to-rem(8px);
+  margin-left: to-rem(12px);
+}
+
+.txt__more {
+  color: $more-color;
+  border: 2px solid $more-color;
+}
+
+.txt__normal {
+  color: $normal-color;
+  border: 2px solid $normal-color;
+}
+
+.txt__less {
+  color: $less-color;
+  border: 2px solid $less-color;
+}
+
+.txt__alcohol {
+  color: $alcohol-color;
+  border: 2px solid $alcohol-color;
+}
+
+.right__map {
+  display: flex;
+  width: 100%;
+  height: calc(100vh - #{$footer-height} - #{$right-side-height});
+}
+
+.footer {
+  @include position(fixed, n, 0, 0, 0);
+
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: $footer-height;
+  background: $main-bg;
+  color: $light;
+  font-size: $font-big;
+  padding: to-rem(18px);
+}
